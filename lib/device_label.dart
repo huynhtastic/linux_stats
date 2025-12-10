@@ -16,8 +16,11 @@ class DeviceLabel extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.monitor,
-              size: 20, color: Colors.white.withValues(alpha: 0.7)),
+          Icon(
+            Icons.monitor,
+            size: 20,
+            color: Colors.white.withValues(alpha: 0.7),
+          ),
           const SizedBox(width: 12),
           Text(
             name,
