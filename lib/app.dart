@@ -4,8 +4,8 @@ import 'dart:io';
 
 import 'package:gpu_usage_app/device_label.dart';
 
-class GPUApp extends StatelessWidget {
-  const GPUApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
