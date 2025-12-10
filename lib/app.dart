@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:gpu_usage_app/device_label.dart';
+
 class GPUApp extends StatelessWidget {
   const GPUApp({super.key});
 
@@ -191,28 +193,7 @@ class _GPUStatsScreenState extends State<GPUStatsScreen> {
           ],
         ),
         const SizedBox(height: 60),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-          ),
-          child: const Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.monitor, size: 20, color: Colors.white70),
-              SizedBox(width: 12),
-              Text(
-                'AMD RADEON RX 7700S', // Hardcoded based on lspci
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
+        const DeviceLabel(name: 'AMD RADEON RX 7700S'),
       ],
     );
   }
