@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'device_label.dart';
 
-class Dashboard extends StatelessWidget {
+class MetricGauge extends StatelessWidget {
   final double percent;
   final Color color;
 
-  const Dashboard({super.key, required this.percent, required this.color});
+  const MetricGauge({super.key, required this.percent, required this.color});
 
   @override
   Widget build(BuildContext context) {

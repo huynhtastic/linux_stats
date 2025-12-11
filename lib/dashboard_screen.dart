@@ -3,16 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'dashboard.dart';
+import 'metric_gauge.dart';
 
-class GPUStatsScreen extends StatefulWidget {
-  const GPUStatsScreen({super.key});
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
 
   @override
-  State<GPUStatsScreen> createState() => _GPUStatsScreenState();
+  State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _GPUStatsScreenState extends State<GPUStatsScreen> {
+class _DashboardScreenState extends State<DashboardScreen> {
   static const String _gpuPath = '/sys/class/drm/card2/device/gpu_busy_percent';
 
   String _usage = '0';
@@ -93,7 +93,7 @@ class _GPUStatsScreenState extends State<GPUStatsScreen> {
       body: Center(
         child: _error
             ? _buildErrorView()
-            : Dashboard(
+            : MetricGauge(
                 percent: percent,
                 color: statusColor,
               ),

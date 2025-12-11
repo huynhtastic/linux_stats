@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'stats.dart';
+import 'dashboard_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -18,7 +18,7 @@ class App extends StatelessWidget {
           surface: Color(0xFF1E1E1E),
         ),
       ),
-      home: const GPUStatsScreen(),
+      home: const DashboardScreen(),
     );
   }
 }
