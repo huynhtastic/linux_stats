@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 
 import 'device_label.dart';
 
@@ -66,4 +67,12 @@ class MetricGauge extends StatelessWidget {
       ],
     );
   }
+}
+
+@Preview(name: 'Metric Gauge')
+Widget buildPreview() {
+  return const MetricGauge(
+    percent: 0.72,
+    color: Colors.amberAccent,
+  );
 }

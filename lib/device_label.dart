@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widget_previews.dart';
 
 class DeviceLabel extends StatelessWidget {
   final String name;
@@ -33,4 +34,9 @@ class DeviceLabel extends StatelessWidget {
       ),
     );
   }
+}
+
+@Preview(name: 'Device Label')
+Widget buildPreview() {
+  return const DeviceLabel(name: 'AMD RX 7900XT');
 }
