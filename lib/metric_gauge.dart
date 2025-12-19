@@ -7,12 +7,14 @@ class MetricGauge extends StatelessWidget {
   final double percent;
   final Color color;
   final String name;
+  final String deviceName;
 
   const MetricGauge({
     super.key,
     required this.percent,
     required this.color,
     required this.name,
+    this.deviceName = 'AMD RADEON RX 7700S',
   });
 
   @override
@@ -37,7 +39,7 @@ class MetricGauge extends StatelessWidget {
               width: 250,
               height: 250,
               child: CircularProgressIndicator(
-                value: percent,
+                value: percent.clamp(0.0, 1.0),
                 strokeWidth: 20,
                 backgroundColor: Colors.white10,
                 valueColor: AlwaysStoppedAnimation<Color>(color),
@@ -69,7 +71,7 @@ class MetricGauge extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 60),
-        const DeviceLabel(name: 'AMD RADEON RX 7700S'),
+        DeviceLabel(name: deviceName),
       ],
     );
   }
