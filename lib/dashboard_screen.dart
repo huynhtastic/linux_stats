@@ -96,6 +96,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             : MetricGauge(
                 percent: percent,
                 color: statusColor,
+                name: 'GPU USAGE',
               ),
       ),
     );

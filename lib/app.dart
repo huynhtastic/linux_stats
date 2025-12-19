@@ -11,9 +11,9 @@ class App extends StatelessWidget {
       showPerformanceOverlay: true,
       debugShowCheckedModeBanner: false,
       title: 'AMD GPU Monitor',
-      theme: ThemeData.light().copyWith(
-        // scaffoldBackgroundColor: const Color(0xFF121212),
-        colorScheme: const ColorScheme.light(
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        colorScheme: const ColorScheme.dark(
           primary: Color(0xFFBB86FC),
           secondary: Color(0xFF03DAC6),
           surface: Color(0xFF1E1E1E),

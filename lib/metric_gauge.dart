@@ -6,17 +6,23 @@ import 'device_label.dart';
 class MetricGauge extends StatelessWidget {
   final double percent;
   final Color color;
+  final String name;
 
-  const MetricGauge({super.key, required this.percent, required this.color});
+  const MetricGauge({
+    super.key,
+    required this.percent,
+    required this.color,
+    required this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text(
-          'GPU USAGE',
-          style: TextStyle(
+        Text(
+          name.toUpperCase(),
+          style: const TextStyle(
             fontSize: 14,
             letterSpacing: 3,
             fontWeight: FontWeight.w600,
@@ -72,6 +78,7 @@ class MetricGauge extends StatelessWidget {
 @Preview(name: 'Metric Gauge')
 Widget buildPreview() {
   return const MetricGauge(
+    name: 'gpu usage',
     percent: 0.72,
     color: Colors.amberAccent,
   );
