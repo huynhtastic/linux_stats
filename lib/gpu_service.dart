@@ -3,10 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'common.dart';
+
 const String _gpuPath = '/sys/class/drm/card2/device/gpu_busy_percent';
 
 class GPUService with ChangeNotifier {
   String _usage = '0';
+  double get usage => parseUsage(_usage);
 
   String? errorMessage;
 
@@ -29,10 +32,5 @@ class GPUService with ChangeNotifier {
       errorMessage = e.toString();
     }
     notifyListeners();
-  }
-
-  double get usage {
-    final val = double.tryParse(_usage);
-    return (val ?? 0) / 100.0;
   }
 }

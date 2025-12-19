@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gpu_usage_app/common.dart' show getColorForUsage;
-import 'package:gpu_usage_app/gpu_service.dart';
 
+import 'common.dart' show getColorForUsage;
+import 'cpu_service.dart';
+import 'gpu_service.dart';
 import 'metric_gauge.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -16,6 +18,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   Timer? _timer;
   final GPUService _gpuService = GPUService();
+  final CPUService _cpuService = CPUService();
 
   @override
   void initState() {
@@ -32,6 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void _startMonitoring() {
     _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       await _gpuService.readUsage();
+      await _cpuService.readCPUUsage();
     });
   }
 
@@ -58,12 +62,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       },
                     ),
                     const SizedBox(width: 64),
-                    // MetricGauge(
-                    //   percent: _parsedCpuUsage,
-                    //   color: _getStatusColor(_parsedCpuUsage),
-                    //   name: 'APP CPU',
-                    //   deviceName: 'PID: $pid',
-                    // ),
+                    ListenableBuilder(
+                      listenable: _cpuService,
+                      builder: (context, child) {
+                        return MetricGauge(
+                          percent: _cpuService.usage,
+                          color: getColorForUsage(_cpuService.usage),
+                          name: 'APP CPU',
+                          deviceName: 'PID: $pid',
+                        );
+                      },
+                    ),
                     const SizedBox(width: 32),
                   ],
                 ),

@@ -13,3 +13,8 @@ Color getColorForUsage(double usage) {
 
   return statusColor;
 }
+
+double parseUsage(String usage) {
+  final val = double.tryParse(usage);
+  return (val ?? 0) / 100.0;
+}
