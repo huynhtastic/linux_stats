@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -69,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           percent: _cpuService.usage,
                           color: getColorForUsage(_cpuService.usage),
                           name: 'APP CPU',
-                          deviceName: 'PID: $pid',
+                          deviceName: 'CPU: ${_cpuService.cpuInfo.name}',
                         );
                       },
                     ),

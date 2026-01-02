@@ -7,6 +7,7 @@ import 'common.dart';
 class CPUService with ChangeNotifier {
   final String _statPath;
   final String _uptimePath;
+  final String _cpuInfoPath;
 
   int? _lastCpuTicks;
   double? _lastCpuTime;
@@ -14,9 +15,38 @@ class CPUService with ChangeNotifier {
   String _usage = '0';
   double get usage => parseUsage(_usage);
 
-  CPUService({String? statPath, String? uptimePath})
+  CPUInfo cpuInfo = CPUInfo();
+
+  CPUService({String? statPath, String? uptimePath, String? cpuInfoPath})
       : _statPath = statPath ?? '/proc/self/stat',
-        _uptimePath = uptimePath ?? '/proc/uptime';
+        _uptimePath = uptimePath ?? '/proc/uptime',
+        _cpuInfoPath = cpuInfoPath ?? '/proc/cpuinfo' {
+    readCPUInfo();
+  }
+
+  Future<void> readCPUInfo() async {
+    try {
+      final cpuInfoFile = File(_cpuInfoPath);
+      final cpuInfoContent = await cpuInfoFile.readAsString();
+      final cpuInfo = _extractCPUInfo(cpuInfoContent);
+      this.cpuInfo.name = cpuInfo.name;
+      notifyListeners();
+    } catch (e) {
+      cpuInfo.name = 'Unknown';
+    }
+  }
+
+  CPUInfo _extractCPUInfo(String cpuInfoContent) {
+    final cpuInfo = CPUInfo();
+    final lines = cpuInfoContent.split('\n');
+    for (final line in lines) {
+      if (line.startsWith('model name')) {
+        cpuInfo.name = line.split(':')[1].trim();
+        break;
+      }
+    }
+    return cpuInfo;
+  }
 
   Future<void> readCPUUsage() async {
     try {
@@ -46,6 +76,12 @@ class CPUService with ChangeNotifier {
       // debugPrint('Error reading CPU usage: $e');
     }
   }
+}
+
+class CPUInfo {
+  String name;
+
+  CPUInfo({this.name = ''});
 }
 
 // Get utime and stime from stat and add them
