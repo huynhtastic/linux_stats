@@ -8,7 +8,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      showPerformanceOverlay: true,
+      // showPerformanceOverlay: true,
       debugShowCheckedModeBanner: false,
       title: 'AMD GPU Monitor',
       theme: ThemeData.dark().copyWith(

@@ -7,6 +7,7 @@ class MetricGauge extends StatelessWidget {
   final double percent;
   final Color color;
   final String name;
+  final String gaugeSubtext;
   final String deviceName;
 
   const MetricGauge({
@@ -14,6 +15,7 @@ class MetricGauge extends StatelessWidget {
     required this.percent,
     required this.color,
     required this.name,
+    this.gaugeSubtext = 'LOAD',
     this.deviceName = 'AMD RADEON RX 7700S',
   });
 
@@ -58,7 +60,7 @@ class MetricGauge extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'LOAD',
+                  gaugeSubtext,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

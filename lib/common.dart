@@ -18,3 +18,8 @@ double parseUsage(String usage) {
   final val = double.tryParse(usage);
   return (val ?? 0) / 100.0;
 }
+
+extension MemoryExtension on num {
+  double get kbToMb => this / 1024;
+  double get kbToGb => this / 1024 / 1024;
+}

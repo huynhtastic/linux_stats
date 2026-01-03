@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:gpu_usage_app/ram_service.dart';
 
-import 'common.dart' show getColorForUsage;
+import 'common.dart';
 import 'cpu_service.dart';
 import 'gpu_service.dart';
 import 'metric_gauge.dart';
@@ -18,6 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Timer? _timer;
   final GPUService _gpuService = GPUService();
   final CPUService _cpuService = CPUService();
+  final RAMService _ramService = RAMService();
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _timer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       await _gpuService.readUsage();
       await _cpuService.readCPUUsage();
+      await _ramService.readRAMUsage();
     });
   }
 
@@ -69,6 +72,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: getColorForUsage(_cpuService.usage),
                           name: 'APP CPU',
                           deviceName: 'CPU: ${_cpuService.cpuInfo.name}',
+                        );
+                      },
+                    ),
+                    const SizedBox(width: 64),
+                    ListenableBuilder(
+                      listenable: _ramService,
+                      builder: (context, child) {
+                        return MetricGauge(
+                          percent: _ramService.usage,
+                          color: getColorForUsage(_ramService.usage),
+                          name: 'RAM',
+                          deviceName:
+                              'RAM: ${_ramService.usedMem.kbToGb.toStringAsFixed(2)}GB / ${_ramService.totalMem.kbToGb.toStringAsFixed(2)}GB',
+                          gaugeSubtext: 'USED',
                         );
                       },
                     ),
