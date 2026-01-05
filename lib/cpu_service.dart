@@ -84,7 +84,7 @@ class CPUInfo {
   CPUInfo({this.name = ''});
 }
 
-// Get utime and stime from stat and add them
+// Aggregate from stat: utime(#14), stime(#15), cutime(#16), cstime(#17)
 Future<int> _getElapsedTicks(String statPath) async {
   final statFile = File(statPath);
   final rawStat = await statFile.readAsString();
@@ -109,12 +109,14 @@ List<String> _extractStats(String rawStat) {
   return stats;
 }
 
-// Add utime and stime at indicies 14 & 15
-// (indices 11 and 12 after removing first 2 entries)
+// Aggregate the stats
+// (indices 11, 12, 13, 14 after removing first 2 entries)
 int _computeElapsedTicks(List<String> stats) {
   final utime = int.parse(stats[11]);
   final stime = int.parse(stats[12]);
-  return utime + stime;
+  final cutime = int.parse(stats[13]);
+  final cstime = int.parse(stats[14]);
+  return utime + stime + cutime + cstime;
 }
 
 Future<double> _getUptime(String uptimePath) async {
