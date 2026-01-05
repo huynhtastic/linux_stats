@@ -9,8 +9,8 @@ class CPUService with ChangeNotifier {
   final String _uptimePath;
   final String _cpuInfoPath;
 
-  int? _lastCpuTicks;
-  double? _lastCpuTime;
+  int? _lastIdleTicks;
+  double? _lastUptime;
 
   String _usage = '0';
   double get usage => parseUsage(_usage);
@@ -48,30 +48,31 @@ class CPUService with ChangeNotifier {
     return cpuInfo;
   }
 
+  // Grab idle ticks, convert to seconds, then calculate usage
   Future<void> readCPUUsage() async {
     try {
-      final elapsedTicks = await _getElapsedTicks(_statPath);
+      final idleTicks = await _getIdleTicks(_statPath);
       final currentUptime = await _getUptime(_uptimePath);
 
       // Can only calculate usage if we have a previous value
-      final canCalculateUsage = _lastCpuTicks != null && _lastCpuTime != null;
+      final canCalculateUsage = _lastIdleTicks != null && _lastUptime != null;
       if (canCalculateUsage) {
-        final deltaTicks = elapsedTicks - _lastCpuTicks!;
-        final deltaTime = currentUptime - _lastCpuTime!;
+        final deltaIdleTicks = idleTicks - _lastIdleTicks!;
+        final deltaTotalTime = currentUptime - _lastUptime!;
 
-        if (deltaTime > 0) {
+        if (deltaTotalTime > 0) {
           // TODO: Get CLK_TCK from the system
           // CLK_TCK is 100 on most Linux systems
-          final cpuSeconds = deltaTicks / 100.0;
-          final percent = (cpuSeconds / deltaTime) * 100;
+          final deltaIdleTime = deltaIdleTicks / 100.0;
+          final percent = (deltaIdleTime / deltaTotalTime) * 100;
 
           _usage = percent.toStringAsFixed(1);
           notifyListeners();
         }
       }
 
-      _lastCpuTicks = elapsedTicks;
-      _lastCpuTime = currentUptime;
+      _lastIdleTicks = idleTicks;
+      _lastUptime = currentUptime;
     } catch (e) {
       // debugPrint('Error reading CPU usage: $e');
     }
@@ -84,17 +85,15 @@ class CPUInfo {
   CPUInfo({this.name = ''});
 }
 
-// Aggregate from stat: utime(#14), stime(#15), cutime(#16), cstime(#17)
-Future<int> _getElapsedTicks(String statPath) async {
+Future<int> _getIdleTicks(String statPath) async {
   final statFile = File(statPath);
   final rawStat = await statFile.readAsString();
 
-  final stats = _extractStats(rawStat);
-  return _computeElapsedTicks(stats);
+  return _extractIdleTicks(rawStat);
 }
 
 // Extract only the stats from the stat file by removing the first 2 entries
-List<String> _extractStats(String rawStat) {
+int _extractIdleTicks(String rawStat) {
   // Remove first 2 entries to handle spaces in filename within parentheses
   final rightParenIndex = rawStat.lastIndexOf(')');
   if (rightParenIndex == -1) throw StateError('Unexpected stat file format');
@@ -106,17 +105,7 @@ List<String> _extractStats(String rawStat) {
     throw StateError('Did not find expected stats in stat file');
   }
 
-  return stats;
-}
-
-// Aggregate the stats
-// (indices 11, 12, 13, 14 after removing first 2 entries)
-int _computeElapsedTicks(List<String> stats) {
-  final utime = int.parse(stats[11]);
-  final stime = int.parse(stats[12]);
-  final cutime = int.parse(stats[13]);
-  final cstime = int.parse(stats[14]);
-  return utime + stime + cutime + cstime;
+  return int.parse(stats[1]);
 }
 
 Future<double> _getUptime(String uptimePath) async {

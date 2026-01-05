@@ -44,11 +44,9 @@ void main() {
 
     await cpuService.readCPUUsage();
 
-    // Second state: 110 ticks (+10), 101.0 uptime (+1.0)
-    // Formula: (deltaTicks / 100.0) / deltaTime * 100 => deltaTicks / deltaTime
-    // 10 / 1.0 = 10%
+    // Second state: 10 idle ticks (+10), 101.0 uptime (+1.0)
     statFile.writeAsStringSync(
-        '1 (test) S 0 0 0 0 0 0 0 0 0 0 110 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0');
+        '1 (test) S 10 0 0 0 0 0 0 0 0 0 100 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0');
     uptimeFile.writeAsStringSync('101.0 100.0');
 
     await cpuService.readCPUUsage();
