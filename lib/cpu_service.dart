@@ -18,7 +18,7 @@ class CPUService with ChangeNotifier {
   CPUInfo cpuInfo = CPUInfo();
 
   CPUService({String? statPath, String? uptimePath, String? cpuInfoPath})
-      : _statPath = statPath ?? '/proc/self/stat',
+      : _statPath = statPath ?? '/proc/stat',
         _uptimePath = uptimePath ?? '/proc/uptime',
         _cpuInfoPath = cpuInfoPath ?? '/proc/cpuinfo' {
     readCPUInfo();
@@ -64,7 +64,9 @@ class CPUService with ChangeNotifier {
           // TODO: Get CLK_TCK from the system
           // CLK_TCK is 100 on most Linux systems
           final deltaIdleTime = deltaIdleTicks / 100.0;
-          final percent = (deltaIdleTime / deltaTotalTime) * 100;
+          final percent =
+              (Platform.numberOfProcessors - (deltaIdleTime / deltaTotalTime)) *
+                  100;
 
           _usage = percent.toStringAsFixed(1);
           notifyListeners();
@@ -74,7 +76,7 @@ class CPUService with ChangeNotifier {
       _lastIdleTicks = idleTicks;
       _lastUptime = currentUptime;
     } catch (e) {
-      // debugPrint('Error reading CPU usage: $e');
+      debugPrint('Error reading CPU usage: $e');
     }
   }
 }
@@ -87,25 +89,15 @@ class CPUInfo {
 
 Future<int> _getIdleTicks(String statPath) async {
   final statFile = File(statPath);
-  final rawStat = await statFile.readAsString();
+  final rawStat = await statFile.readAsLines();
 
-  return _extractIdleTicks(rawStat);
+  return _extractIdleTicks(rawStat[0]);
 }
 
-// Extract only the stats from the stat file by removing the first 2 entries
 int _extractIdleTicks(String rawStat) {
-  // Remove first 2 entries to handle spaces in filename within parentheses
-  final rightParenIndex = rawStat.lastIndexOf(')');
-  if (rightParenIndex == -1) throw StateError('Unexpected stat file format');
+  final idleTicks = rawStat.trim().split(RegExp(r'\s+'))[4];
 
-  final stats =
-      rawStat.substring(rightParenIndex + 1).trim().split(RegExp(r'\s+'));
-
-  if (stats.length < 13) {
-    throw StateError('Did not find expected stats in stat file');
-  }
-
-  return int.parse(stats[1]);
+  return int.parse(idleTicks);
 }
 
 Future<double> _getUptime(String uptimePath) async {

@@ -32,19 +32,22 @@ Default locations are:
 
 > Fun fact: I learned time here is measured in "jiffies" (1/USER_HZ), where USER_HZ is defined as 100 in most Linux distributions, but can be different. [Refer to this stackoverflow answer for more](https://stackoverflow.com/a/10885808).
 
-> Also fun fact: I learned that a jiffy is used in electronics as "[...the period of an aternating current power cycle...](https://en.wikipedia.org/wiki/Jiffy_(time)#:~:text=In%20electronics%2C%20a%20jiffy%20is%20the%20period%20of%20an%20alternating%20current%20power%20cycle%2C%5B5%5D%201/60%20or%201/50%20of%20a%20second%20in%20most%20mains%20power%20supplies.)", which would be 1/60 in the US, since AC power runs at 60hz. Helps to remember what a jiffie is.
+> Also fun fact: I learned that a jiffy is used in electronics as "[...the period of an alternating current power cycle...](https://en.wikipedia.org/wiki/Jiffy_(time)#:~:text=In%20electronics%2C%20a%20jiffy%20is%20the%20period%20of%20an%20alternating%20current%20power%20cycle%2C%5B5%5D%201/60%20or%201/50%20of%20a%20second%20in%20most%20mains%20power%20supplies.)", which would be 1/60 in the US, since AC power runs at 60hz. Helps to remember what a jiffie is.
 
 But if you don't want to know all of that, we're going to be using **clock ticks** instead of jiffies.
 
-To calculate CPU utilization, we are subtracting **the percentage of clock ticks that were __idle__ over a time interval** from 1.
+To calculate CPU utilization, we are subtracting **the percentage of clock ticks that were __idle__ over a time interval** from the total number of logical processors.
 
 In other words:
 
-$$ \text{CPU Usage (\\%)} = \left(1 - \frac{\Delta \text{Idle}}{\Delta \text{Total}}\right) \times 100 $$
+$$ \text{CPU Usage (\\%)} = \left(\#_{\text{log\_procs}} - \frac{\Delta \text{Idle}}{\Delta \text{Total}}\right) \times 100 $$
 
 
+- $\#_{\text{log\_procs}}$: the number of logical processors
 - $\Delta \text{Idle}$: the difference in idle time between two readings of `/proc/stat` and `/proc/uptime`
 - $\Delta \text{Total}$: the difference in total time between two readings of `/proc/stat` and `/proc/uptime`
+
+Most formulas will use 1 as a constant in place of $\#_{\text{log\_procs}}$, but that's only for a single logical processor.
 
 In the code, since we're actually getting idle time from `/proc/stat` in units of ticks but uptime from `/proc/stat` in seconds, we'll need to convert ΔIdle to seconds by dividing it by CLK_TCK (100 on most Linux systems).
 
