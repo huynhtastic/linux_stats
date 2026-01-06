@@ -1,6 +1,6 @@
 {
-    "name": "gpu_usage_app",
-    "short_name": "gpu_usage_app",
+    "name": "linux_stats",
+    "short_name": "linux_stats",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

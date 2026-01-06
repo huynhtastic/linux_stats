@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:gpu_usage_app/ram_service.dart';
+import 'package:linux_stats/ram_service.dart';
 
 import 'common.dart';
 import 'cpu_service.dart';

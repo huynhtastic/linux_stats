@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gpu_usage_app/app.dart';
+import 'package:linux_stats/app.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {

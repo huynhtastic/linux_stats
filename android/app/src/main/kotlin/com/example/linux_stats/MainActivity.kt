@@ -1,4 +1,4 @@
-package com.example.gpu_usage_app
+package com.example.linux_stats
 
 import io.flutter.embedding.android.FlutterActivity
 
