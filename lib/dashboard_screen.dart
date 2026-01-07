@@ -50,10 +50,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 16),
         actions: [
           Builder(
             builder: (context) => IconButton(
-              icon: const Icon(Icons.settings),
+              icon: const Icon(Icons.menu),
               onPressed: () => Scaffold.of(context).openEndDrawer(),
             ),
           ),
