@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:linux_stats/ram_service.dart';
+import 'package:linux_stats/settings_drawer.dart';
 
 import 'common.dart';
-import 'cpu_service.dart';
+import 'features/cpu/cpu_metric_gauge.dart';
+import 'features/cpu/cpu_service.dart';
 import 'gpu_service.dart';
 import 'metric_gauge.dart';
+import 'ram_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -44,6 +46,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            ),
+          ),
+        ],
+      ),
+      endDrawer: SettingsDrawer(cpuService: _cpuService),
       body: Center(
         child: _gpuService.errorMessage != null
             ? _buildErrorView()
@@ -64,17 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       },
                     ),
                     const SizedBox(width: 64),
-                    ListenableBuilder(
-                      listenable: _cpuService,
-                      builder: (context, child) {
-                        return MetricGauge(
-                          percent: _cpuService.usage,
-                          color: getColorForUsage(_cpuService.usage),
-                          name: 'APP CPU',
-                          deviceName: 'CPU: ${_cpuService.cpuInfo.name}',
-                        );
-                      },
-                    ),
+                    CPUMetricGauge(cpuService: _cpuService),
                     const SizedBox(width: 64),
                     ListenableBuilder(
                       listenable: _ramService,

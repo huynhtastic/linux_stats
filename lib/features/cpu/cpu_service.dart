@@ -2,7 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'common.dart';
+import '../../common.dart';
+import 'models/cpu_info.dart';
+
+enum CpuMode { irix, solaris }
 
 class CPUService with ChangeNotifier {
   final String _statPath;
@@ -48,6 +51,14 @@ class CPUService with ChangeNotifier {
     return cpuInfo;
   }
 
+  CpuMode _mode = CpuMode.irix;
+  CpuMode get mode => _mode;
+
+  void setMode(CpuMode mode) {
+    _mode = mode;
+    notifyListeners();
+  }
+
   // Grab idle ticks, convert to seconds, then calculate usage
   Future<void> readCPUUsage() async {
     try {
@@ -64,9 +75,13 @@ class CPUService with ChangeNotifier {
           // TODO: Get CLK_TCK from the system
           // CLK_TCK is 100 on most Linux systems
           final deltaIdleTime = deltaIdleTicks / 100.0;
-          final percent =
+          var percent =
               (Platform.numberOfProcessors - (deltaIdleTime / deltaTotalTime)) *
                   100;
+
+          if (_mode == CpuMode.solaris) {
+            percent = percent / Platform.numberOfProcessors;
+          }
 
           _usage = percent.toStringAsFixed(1);
           notifyListeners();
@@ -79,12 +94,6 @@ class CPUService with ChangeNotifier {
       debugPrint('Error reading CPU usage: $e');
     }
   }
-}
-
-class CPUInfo {
-  String name;
-
-  CPUInfo({this.name = ''});
 }
 
 Future<int> _getIdleTicks(String statPath) async {
