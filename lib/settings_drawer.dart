@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'features/cpu/cpu_service.dart';
+import 'features/cpu/irix_solaris_switch.dart';
 
 class SettingsDrawer extends StatelessWidget {
   final CPUService cpuService;
@@ -20,36 +21,7 @@ class SettingsDrawer extends StatelessWidget {
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('CPU Mode'),
-          ),
-          ListenableBuilder(
-            listenable: cpuService,
-            builder: (context, _) {
-              return ToggleButtons(
-                borderRadius: BorderRadius.circular(8),
-                isSelected: [
-                  cpuService.mode == CpuMode.solaris,
-                  cpuService.mode == CpuMode.irix,
-                ],
-                onPressed: (index) {
-                  cpuService
-                      .setMode(index == 0 ? CpuMode.solaris : CpuMode.irix);
-                },
-                children: const [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Solaris'),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Irix'),
-                  ),
-                ],
-              );
-            },
-          ),
+          IrixSolarisSwitch(cpuService: cpuService),
         ],
       ),
     );

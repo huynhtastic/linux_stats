@@ -51,7 +51,7 @@ class CPUService with ChangeNotifier {
     return cpuInfo;
   }
 
-  CpuMode _mode = CpuMode.irix;
+  CpuMode _mode = CpuMode.solaris;
   CpuMode get mode => _mode;
 
   void setMode(CpuMode mode) {
