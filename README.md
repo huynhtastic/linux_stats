@@ -40,18 +40,18 @@ To calculate CPU utilization, we are subtracting **the percentage of clock ticks
 
 In other words:
 
-$$ \text{CPU Usage (\\%)} = \left(\#_{\text{log\_procs}} - \frac{\Delta \text{Idle}}{\Delta \text{Total}}\right) \times 100 $$
+$$ \text{CPU Usage (\\%)} = \left(N_{log\\_procs} - \frac{\Delta \text{Idle}}{\Delta \text{Total}}\right) \times 100 $$
 
 
-- $\#_{\text{log\_procs}}$: the number of logical processors
+- $N_{log\\_procs}$: the number of logical processors
 - $\Delta \text{Idle}$: the difference in idle time between two readings of `/proc/stat` and `/proc/uptime`
 - $\Delta \text{Total}$: the difference in total time between two readings of `/proc/stat` and `/proc/uptime`
 
-Most formulas will use 1 as a constant in place of $\#_{\text{log\_procs}}$, but that's only for a single logical processor.
+Most formulas will use 1 as a constant in place of $N_{log\\_procs}$, but that's only for a single logical processor.
 
 In the code, since we're actually getting idle time from `/proc/stat` in units of ticks but uptime from `/proc/stat` in seconds, we'll need to convert ΔIdle to seconds by dividing it by CLK_TCK (100 on most Linux systems).
 
-$$ \text{CPU Usage (\\%)} = \left(1 - \frac{\left(\text{idle ticks}_{\text{new}} - \text{idle ticks}_{\text{old}}\right) / USER\_HZ}{\text{uptime}_{\text{new}} - \text{uptime}_{\text{old}}}\right) \times 100 $$
+$$ \text{CPU Usage (\\%)} = \left(N_{log\\_procs} - \frac{\left(\text{idle ticks}_{\text{new}} - \text{idle ticks}_{\text{old}}\right) / USER\_HZ}{\text{uptime}_{\text{new}} - \text{uptime}_{\text{old}}}\right) \times 100 $$
 
 [Rosetta Code](https://rosettacode.org/wiki/Linux_CPU_utilization) has the calculations in different languages.
 ### GPU
